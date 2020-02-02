@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Torso : MonoBehaviour
 {
     public GameObject player;
@@ -51,6 +51,12 @@ public class Torso : MonoBehaviour
     //CHRIS THIS BOOL WILL LET THE BOSS KNOW THAT CONTACT WITH THE PLAYER WILL DEAL DAMAGE
     public bool canDamagePlayer;
 
+    [SerializeField] Image healthbar;
+
+    [SerializeField] int health;
+    [SerializeField] int slamDamage;
+    public int rollDamage;
+
     float tiredTimer;
     bool tired;
 
@@ -65,6 +71,10 @@ public class Torso : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float width = (float)health / (float)1000;
+
+        healthbar.rectTransform.sizeDelta = new Vector2(width * 600, 40);
+
         if (tired)
         {
             //CHRIS MAKE IT DO THE TIRED BREATHING ANIMATION IN HERE
@@ -201,7 +211,7 @@ public class Torso : MonoBehaviour
                     rollingDelay -= Time.deltaTime;
                 }
 
-                if (rollingDelay < 0.0f && gettingUp == false)
+                if (rollingDelay < 0.0f && gettingUp == false && !rolling)
                 {
                     rolling = true;
                     canDamagePlayer = true;
@@ -263,6 +273,7 @@ public class Torso : MonoBehaviour
                         tiredTimer = 5.0f;
 
                         //CHRIS MAKE THE PLAYER TAKES DAMAGE IF THEY'RE ON THE GROUND WHEN THIS HAPPENS
+                        player.GetComponent<PlayerStats>().groundSlammed(slamDamage);
                     }
 
                     torso.transform.position = percentage * slamHeight + ((1 - percentage) * initialPosition);
@@ -358,6 +369,18 @@ public class Torso : MonoBehaviour
             initialPosition = offset.transform.localPosition;
             rollingTarget = new Vector3(0, 0, 0);
             canDamagePlayer = false;
+        }
+    }
+
+  
+
+    public void takeDamage(int damageIn)
+    {
+        health -= damageIn;
+        if (health <= 0)
+        {
+            //player win
+            Destroy(gameObject);
         }
     }
 }

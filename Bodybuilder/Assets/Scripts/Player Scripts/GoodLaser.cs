@@ -48,6 +48,7 @@ public class GoodLaser : MonoBehaviour
         timerStart = true;
 
         gameObject.GetComponent<MeshRenderer>().enabled = false;
+        gameObject.GetComponent<MeshCollider>().enabled = false;
 
         gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         //gameObject.transform.forward = Vector3.up;

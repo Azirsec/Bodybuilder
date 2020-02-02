@@ -35,18 +35,11 @@ public class PlayerLasers : MonoBehaviour
         cooldown -= Time.deltaTime;
         if (Input.GetMouseButton(1))
         {
-            RaycastHit hit1;
-            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit1, sightdist))
-            {
-                aimlocation = hit1.collider.gameObject.transform.position;
-            }
-            else
-            {
-                aimlocation = camera.transform.position + camera.transform.forward * sightdist;
-            }
+            aimlocation = camera.transform.position + camera.transform.forward * sightdist;
+
             //make reticle visible
             reticle.enabled = true;
-            
+
             head.LookAt(aimlocation);
             head.Rotate(new Vector3(-90, 0, 0));
 
@@ -70,9 +63,6 @@ public class PlayerLasers : MonoBehaviour
 
     void FireLasers()
     {
-        //do a raycast from the camera position and direction, then either where it collides or 
-        //at the end of its sightdist that is where aimlocation is
-
         Quaternion direction = new Quaternion();
         direction.SetLookRotation(aimlocation - rightEyePos.position);
         Instantiate(laser, rightEyePos.position + camera.transform.forward, direction);

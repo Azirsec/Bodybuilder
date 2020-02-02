@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Head : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class Head : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject lefteye;
     [SerializeField] private GameObject righteye;
+
+    [SerializeField] Image healthbar;
 
     [SerializeField] Transform knockbackpos;
 
@@ -33,6 +36,10 @@ public class Head : MonoBehaviour
 
     Vector3 righteyetoaim;
     Vector3 lefteyetoaim;
+
+    public Animator animator;
+
+    [SerializeField] Transform weakspot;
 
     HeadState state = HeadState.NotTired;
 
@@ -54,6 +61,11 @@ public class Head : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+
+        float width = (float)health / (float)3;
+        print(width);
+
+        healthbar.rectTransform.sizeDelta = new Vector2(width * 600, 40);
 
         switch (state)
         {
@@ -126,6 +138,10 @@ public class Head : MonoBehaviour
                 {
                     shotsLeft = maxShots;
                     state = HeadState.Tired;
+                    animator.SetBool("Tired", true);
+
+                    transform.forward = new Vector3(0, 0, 1);
+                    weakspot.transform.position += transform.forward;
                 }
                 else
                 {
@@ -159,10 +175,11 @@ public class Head : MonoBehaviour
                 break;
             case HeadState.Tired:
                 //boss plays lean forward animation and waits for a few seconds
-                transform.forward = new Vector3(0, 0, 1);
                 if (timer >= 8)
                 {
                     state = HeadState.NotTired;
+                    animator.SetBool("Tired", false);
+                    weakspot.transform.position -= transform.forward;
                 }
 
                 break;

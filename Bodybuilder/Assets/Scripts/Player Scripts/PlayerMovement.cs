@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool unlocked = false;
 
-    bool haslegs = false;
+    [SerializeField] bool haslegs = false;
 
     ///dash things
     [SerializeField] float dashspeed;
@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     bool candash = true;
     Vector2 direction;
     Vector3 dashDirection;
+
+    bool grounded = true;
 
     bool stunned = false;
     float stunduration = 0;
@@ -69,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
                         //transform.localPosition += horizontalRotation.transform.right * speed * Time.deltaTime;
                     }
 
-                    if (rb.velocity.y == 0 && Input.GetKeyDown(KeyCode.Space) && haslegs)
+                    if (grounded && Input.GetKeyDown(KeyCode.Space) && haslegs)
                     {
                         rb.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
                     }
@@ -157,5 +159,23 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
 
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        grounded = false;
+    }
+
+ public bool getGrounded()
+    {
+        return grounded;
     }
 }
